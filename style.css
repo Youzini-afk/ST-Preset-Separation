@@ -116,7 +116,6 @@
     padding: 14px 18px !important;
     opacity: 1 !important;
     color: #fff !important;
-    animation: psSlideIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 
 /* 覆盖 toastr 所有类型的默认背景图片 */
@@ -128,21 +127,10 @@
     background-color: #1a1b1e !important;
 }
 
-/* 入场动画：从右侧滑入 + 淡入 */
-@keyframes psSlideIn {
-    0% {
-        transform: translateX(60px);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
 .preset-sep-toast {
     display: flex;
     align-items: center;
+    gap: 12px;
     position: relative;
     z-index: 2;
 }
