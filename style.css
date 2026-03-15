@@ -2,6 +2,8 @@
    Preset Separation — Extension Styles
    ============================================= */
 
+/* ── Settings Panel ── */
+
 #preset_separation_settings .preset-sep-description {
     margin-bottom: 8px;
     padding: 6px 10px;
@@ -43,19 +45,18 @@
 
 #preset_separation_settings .preset-sep-info-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 4px 8px;
     border-radius: 4px;
     background: var(--SmartThemeBlurTintColor, rgba(0, 0, 0, 0.1));
     font-size: 0.85em;
+    gap: 8px;
 }
 
 #preset_separation_settings .preset-sep-info-item .label {
     color: var(--SmartThemeBodyColor, #ccc);
     opacity: 0.7;
     white-space: nowrap;
-    margin-right: 8px;
 }
 
 #preset_separation_settings .preset-sep-info-item .value {
@@ -66,4 +67,79 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 200px;
+    margin-left: auto;
+}
+
+/* ── Animated SVG Checkmark ── */
+
+.preset-sep-check {
+    flex-shrink: 0;
+}
+
+.preset-sep-check-circle {
+    stroke: #4caf50;
+    stroke-dasharray: 138;
+    stroke-dashoffset: 138;
+    animation: psCircle 0.5s ease-out forwards;
+}
+
+.preset-sep-check-tick {
+    stroke: #4caf50;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: psTick 0.35s 0.35s ease-out forwards;
+}
+
+@keyframes psCircle {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes psTick {
+    to { stroke-dashoffset: 0; }
+}
+
+/* ── Custom Toast ── */
+
+.preset-sep-toast-wrapper {
+    background: linear-gradient(135deg,
+        rgba(30, 40, 55, 0.95),
+        rgba(20, 30, 45, 0.98)) !important;
+    border: 1px solid rgba(76, 175, 80, 0.3) !important;
+    border-radius: 10px !important;
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 0 12px rgba(76, 175, 80, 0.15) !important;
+    padding: 12px 16px !important;
+    opacity: 1 !important;
+}
+
+.preset-sep-toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.preset-sep-toast-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.preset-sep-toast-title {
+    font-weight: 700;
+    font-size: 0.95em;
+    color: #4caf50;
+    letter-spacing: 0.3px;
+}
+
+.preset-sep-toast-detail {
+    font-size: 0.82em;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.preset-sep-toast-detail span {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
 }

@@ -146,13 +146,60 @@ function onPresetChangedAfter() {
     // Save settings to persist the restored connection state
     saveSettingsDebounced();
 
-    toastr.info('API 连接设置已保护，未随预设切换', 'Preset Separation', {
-        timeOut: 2000,
-        preventDuplicates: true,
-    });
+    showProtectionToast();
 
     // Refresh the status panel
     updateStatusPanel();
+}
+
+/* ------------------------------------------------------------------ */
+/*  Animated Check & Custom Toast                                      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Create an animated SVG circle-checkmark element.
+ * @param {number} size CSS size in px (default 18)
+ * @returns {string} HTML string
+ */
+function createAnimatedCheck(size = 18) {
+    return `<svg class="preset-sep-check" width="${size}" height="${size}" viewBox="0 0 52 52">
+        <circle class="preset-sep-check-circle" cx="26" cy="26" r="22" fill="none" stroke-width="3"/>
+        <path   class="preset-sep-check-tick"   fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke-width="4"/>
+    </svg>`;
+}
+
+/**
+ * Show a premium custom toast notification when API settings are protected.
+ */
+function showProtectionToast() {
+    const source = oai_settings.chat_completion_source || '—';
+    const modelFields = [
+        'openai_model', 'claude_model', 'google_model',
+        'openrouter_model', 'mistralai_model', 'custom_model',
+        'deepseek_model', 'groq_model',
+    ];
+    let model = '—';
+    for (const f of modelFields) {
+        if (oai_settings[f]) { model = oai_settings[f]; break; }
+    }
+
+    const html = `
+        <div class="preset-sep-toast">
+            ${createAnimatedCheck(32)}
+            <div class="preset-sep-toast-body">
+                <div class="preset-sep-toast-title">API 连接已保护</div>
+                <div class="preset-sep-toast-detail">
+                    <span>${source}</span> · <span>${model}</span>
+                </div>
+            </div>
+        </div>`;
+
+    toastr.success(html, '', {
+        timeOut: 2500,
+        escapeHtml: false,
+        preventDuplicates: true,
+        toastClass: 'toast preset-sep-toast-wrapper',
+    });
 }
 
 /* ------------------------------------------------------------------ */
@@ -180,6 +227,7 @@ function updateStatusPanel() {
         if (value === undefined || value === null || value === '') continue;
 
         const $item = $('<div class="preset-sep-info-item"></div>');
+        $item.append(createAnimatedCheck());
         $item.append(`<span class="label">${label}</span>`);
         $item.append(`<span class="value" title="${String(value)}">${String(value)}</span>`);
         $info.append($item);
