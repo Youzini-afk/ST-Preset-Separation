@@ -169,16 +169,19 @@ function createAnimatedCheck(size = 18) {
  */
 function showProtectionToast() {
     const source = oai_settings.chat_completion_source || '—';
-    // 查找当前非空的模型字段用于展示
-    const modelFields = [
-        'openai_model', 'claude_model', 'google_model',
-        'openrouter_model', 'mistralai_model', 'custom_model',
-        'deepseek_model', 'groq_model',
-    ];
-    let model = '—';
-    for (const f of modelFields) {
-        if (oai_settings[f]) { model = oai_settings[f]; break; }
-    }
+    // 根据当前 API Source 找到对应的模型字段
+    const sourceModelMap = {
+        'openai':     'openai_model',
+        'claude':     'claude_model',
+        'google':     'google_model',
+        'openrouter': 'openrouter_model',
+        'mistralai':  'mistralai_model',
+        'custom':     'custom_model',
+        'deepseek':   'deepseek_model',
+        'groq':       'groq_model',
+    };
+    const modelField = sourceModelMap[source];
+    const model = (modelField && oai_settings[modelField]) || '—';
 
     const html = `
         <div class="preset-sep-toast">
