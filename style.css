@@ -104,23 +104,25 @@
 
 /* ── 自定义 Toast 通知 ── */
 
-.preset-sep-toast-wrapper {
-    background: linear-gradient(135deg,
-        rgba(30, 40, 55, 0.95),
-        rgba(20, 30, 45, 0.98)) !important;
+#toast-container > .preset-sep-toast-wrapper {
+    background: linear-gradient(135deg, #1e2837, #141e2d) !important;
     background-image: none !important;
-    border: 1px solid rgba(76, 175, 80, 0.3) !important;
+    background-color: #1a2435 !important;
+    border: 1px solid rgba(76, 175, 80, 0.35) !important;
     border-radius: 10px !important;
     box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 4px 24px rgba(0, 0, 0, 0.5),
         0 0 12px rgba(76, 175, 80, 0.15) !important;
-    padding: 12px 16px !important;
+    padding: 14px 18px !important;
     opacity: 1 !important;
 }
 
-.preset-sep-toast-wrapper.toast-success {
+/* 覆盖 toastr 所有类型的默认背景图片 */
+#toast-container > .preset-sep-toast-wrapper.toast-success,
+#toast-container > .preset-sep-toast-wrapper.toast-info,
+#toast-container > .preset-sep-toast-wrapper.toast-warning,
+#toast-container > .preset-sep-toast-wrapper.toast-error {
     background-image: none !important;
-    background-color: transparent !important;
 }
 
 .preset-sep-toast {
