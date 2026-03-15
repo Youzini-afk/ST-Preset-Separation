@@ -11,9 +11,9 @@
  *   2. Listen for OAI_PRESET_CHANGED_AFTER   → restore connection fields from snapshot
  */
 
-import { saveSettingsDebounced, eventSource, event_types } from '../../../script.js';
-import { extension_settings, renderExtensionTemplateAsync } from '../../extensions.js';
-import { oai_settings, settingsToUpdate } from '../../openai.js';
+import { saveSettingsDebounced, eventSource, event_types } from '../../../../script.js';
+import { extension_settings, renderExtensionTemplateAsync } from '../../../extensions.js';
+import { oai_settings, settingsToUpdate } from '../../../openai.js';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
