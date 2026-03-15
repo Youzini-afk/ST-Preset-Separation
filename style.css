@@ -104,12 +104,13 @@
 
 /* ── 自定义 Toast 通知 ── */
 
-/* 覆盖默认 toast 样式，实现极简高级暗色 + 左侧绿条 */
+/* 覆盖默认 toast 样式，实现极简高级暗色 + 左侧绿条 + 顶部细黄条 */
 #toast-container > .preset-sep-toast-wrapper {
     background: #1a1b1e !important;
     border: none !important;
     border-radius: 8px !important;
     border-left: 4px solid #38d9a9 !important;
+    border-top: 1px solid #fcc419 !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
     padding: 16px 20px 16px 50px !important; /* 左侧留出图标空间 */
     opacity: 1 !important;
