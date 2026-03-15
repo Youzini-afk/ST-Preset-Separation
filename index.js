@@ -19,7 +19,7 @@ import { oai_settings, settingsToUpdate } from '../../../openai.js';
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const MODULE_NAME = 'ST-Preset-Separation';
+const MODULE_NAME = 'third-party/ST-Preset-Separation';
 const LOG_PREFIX = '[PresetSep]';
 
 const DEFAULT_SETTINGS = {
