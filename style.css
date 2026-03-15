@@ -104,62 +104,28 @@
 
 /* ── 自定义 Toast 通知 ── */
 
+/* 覆盖默认 toast 样式，实现极简高级暗色 + 左侧绿条 */
 #toast-container > .preset-sep-toast-wrapper {
-    background: linear-gradient(135deg, rgba(28, 36, 49, 0.85), rgba(15, 23, 34, 0.95)) !important;
-    backdrop-filter: blur(12px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-    background-image: none !important;
-    border: 1px solid rgba(76, 175, 80, 0.45) !important;
-    border-radius: 12px !important;
-    box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.6),
-        0 0 16px rgba(76, 175, 80, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-    padding: 16px 20px !important;
+    background: #1a1b1e !important;
+    border: none !important;
+    border-radius: 8px !important;
+    border-left: 4px solid #38d9a9 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+    padding: 16px 20px 16px 50px !important; /* 左侧留出图标空间 */
     opacity: 1 !important;
-    overflow: hidden;
-    position: relative;
-    animation: psToastGlow 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate !important;
+    color: #fff !important;
 }
 
-/* 呼吸发光特效 */
-@keyframes psToastGlow {
-    0% { box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(76,175,80,0.15), inset 0 1px 0 rgba(255,255,255,0.1); }
-    100% { box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(76,175,80,0.4), inset 0 1px 0 rgba(255,255,255,0.1); }
-}
-
-/* 光束扫过特效 */
-#toast-container > .preset-sep-toast-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
-    transform: skewX(-20deg);
-    animation: psLightSweep 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    pointer-events: none;
-}
-
-@keyframes psLightSweep {
-    0% { left: -100%; }
-    50%, 100% { left: 200%; }
-}
-
-/* 覆盖 toastr 所有类型的默认背景图片 */
-#toast-container > .preset-sep-toast-wrapper.toast-success,
-#toast-container > .preset-sep-toast-wrapper.toast-info,
-#toast-container > .preset-sep-toast-wrapper.toast-warning,
-#toast-container > .preset-sep-toast-wrapper.toast-error {
-    background-image: none !important;
-    background-color: transparent !important;
+/* 恢复默认的成功图标背景，但调整位置 */
+#toast-container > .preset-sep-toast-wrapper.toast-success {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%2338d9a9"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>') !important;
+    background-size: 24px !important;
+    background-position: 15px center !important;
 }
 
 .preset-sep-toast {
     display: flex;
     align-items: center;
-    gap: 14px;
     position: relative;
     z-index: 2;
 }
@@ -170,22 +136,21 @@
     gap: 4px;
 }
 
-/* Toast 标题 —— 绿色高亮加发光 */
+/* Toast 标题 —— 薄荷绿 */
 .preset-sep-toast-title {
     font-weight: 700;
     font-size: 1.05em;
-    color: #69f0ae;
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 10px rgba(105, 240, 174, 0.3);
+    color: #69db7c;
+    letter-spacing: 0.3px;
 }
 
 /* Toast 详情 —— 展示 API Source 和 Model */
 .preset-sep-toast-detail {
-    font-size: 0.82em;
-    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .preset-sep-toast-detail span {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.95);
     font-weight: 500;
 }
