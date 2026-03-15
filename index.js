@@ -1,14 +1,13 @@
 /**
- * Preset Separation — SillyTavern Extension
+ * Preset Separation — SillyTavern 扩展插件
  *
- * Decouples API connection settings from Chat Completion presets.
- * When enabled, switching a CC preset will only update dialogue parameters
- * (temperature, prompts, etc.) without touching the API source, model,
- * reverse proxy, or any other connection-related field.
+ * 解耦 API 连接设置与对话补全预设。
+ * 启用后，切换对话补全预设时仅更新对话参数（温度、提示词等），
+ * 不会改变 API Source、模型、反向代理等连接相关设置。
  *
- * Strategy:
- *   1. Listen for OAI_PRESET_CHANGED_BEFORE  → snapshot current connection fields
- *   2. Listen for OAI_PRESET_CHANGED_AFTER   → restore connection fields from snapshot
+ * 实现策略：
+ *   1. 监听 OAI_PRESET_CHANGED_BEFORE → 快照当前连接设置
+ *   2. 监听 OAI_PRESET_CHANGED_AFTER  → 从快照恢复连接设置
  */
 
 import { saveSettingsDebounced, eventSource, event_types } from '../../../../script.js';
@@ -16,20 +15,20 @@ import { extension_settings, renderExtensionTemplateAsync } from '../../../exten
 import { oai_settings, settingsToUpdate } from '../../../openai.js';
 
 /* ------------------------------------------------------------------ */
-/*  Constants                                                          */
+/*  常量                                                                */
 /* ------------------------------------------------------------------ */
 
 const MODULE_NAME = 'third-party/ST-Preset-Separation';
 const LOG_PREFIX = '[PresetSep]';
 
+/** 默认设置 */
 const DEFAULT_SETTINGS = {
     enabled: false,
 };
 
 /**
- * Human-readable labels for important connection fields that we show in
- * the status panel.  Only a curated subset — we still protect ALL
- * is_connection fields regardless of whether they appear here.
+ * 在状态面板中展示的连接字段人类可读标签。
+ * 仅展示精选子集 —— 无论是否在此列出，所有 is_connection 字段都会被保护。
  */
 const DISPLAY_FIELDS = {
     chat_completion_source: 'API Source',
@@ -46,19 +45,18 @@ const DISPLAY_FIELDS = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  State                                                              */
+/*  状态                                                                */
 /* ------------------------------------------------------------------ */
 
-/** @type {Record<string, any> | null} */
+/** @type {Record<string, any> | null} 连接设置快照 */
 let connectionSnapshot = null;
 
 /* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
+/*  工具函数                                                            */
 /* ------------------------------------------------------------------ */
 
 /**
- * Build a Set of setting_name values that are connection-related,
- * derived from the exported settingsToUpdate map.
+ * 从 settingsToUpdate 映射表中提取所有 is_connection 为 true 的字段。
  * @returns {Map<string, {selector: string, settingName: string, isCheckbox: boolean}>}
  */
 function getConnectionFields() {
@@ -72,8 +70,7 @@ function getConnectionFields() {
 }
 
 /**
- * Capture the current values of all connection-type settings from
- * oai_settings into a plain object snapshot.
+ * 捕获当前所有连接类型设置的值，存入快照对象。
  */
 function captureConnectionSnapshot() {
     const fields = getConnectionFields();
@@ -81,14 +78,13 @@ function captureConnectionSnapshot() {
     for (const [settingName] of fields) {
         snap[settingName] = structuredClone(oai_settings[settingName]);
     }
-    console.debug(`${LOG_PREFIX} Captured connection snapshot`, snap);
+    console.debug(`${LOG_PREFIX} 已捕获连接设置快照`, snap);
     return snap;
 }
 
 /**
- * Restore connection settings from a snapshot, updating both the
- * oai_settings object and the corresponding DOM elements.
- * @param {Record<string, any>} snapshot
+ * 从快照恢复连接设置，同时更新 oai_settings 对象和对应的 DOM 元素。
+ * @param {Record<string, any>} snapshot 连接设置快照
  */
 function restoreConnectionSnapshot(snapshot) {
     if (!snapshot) return;
@@ -101,7 +97,7 @@ function restoreConnectionSnapshot(snapshot) {
         const oldValue = snapshot[settingName];
         oai_settings[settingName] = oldValue;
 
-        // Update corresponding DOM element
+        // 更新对应的 DOM 元素
         const $el = $(meta.selector);
         if ($el.length === 0) continue;
 
@@ -114,18 +110,18 @@ function restoreConnectionSnapshot(snapshot) {
         }
     }
 
-    // Trigger change events so ST's internal listeners catch up
+    // 触发 change 事件，让 ST 内部监听器同步状态
     $('#chat_completion_source').trigger('change');
 
-    console.debug(`${LOG_PREFIX} Restored connection snapshot`);
+    console.debug(`${LOG_PREFIX} 已从快照恢复连接设置`);
 }
 
 /* ------------------------------------------------------------------ */
-/*  Event Handlers                                                     */
+/*  事件处理                                                            */
 /* ------------------------------------------------------------------ */
 
 /**
- * Before a preset is applied — capture the current state.
+ * 预设应用前 —— 捕获当前连接设置快照。
  */
 function onPresetChangedBefore(_event) {
     if (!extension_settings[MODULE_NAME]?.enabled) return;
@@ -134,7 +130,7 @@ function onPresetChangedBefore(_event) {
 }
 
 /**
- * After a preset is applied — restore connection settings from snapshot.
+ * 预设应用后 —— 从快照恢复连接设置。
  */
 function onPresetChangedAfter() {
     if (!extension_settings[MODULE_NAME]?.enabled) return;
@@ -143,23 +139,23 @@ function onPresetChangedAfter() {
     restoreConnectionSnapshot(connectionSnapshot);
     connectionSnapshot = null;
 
-    // Save settings to persist the restored connection state
+    // 保存设置以持久化恢复后的连接状态
     saveSettingsDebounced();
 
     showProtectionToast();
 
-    // Refresh the status panel
+    // 刷新状态面板
     updateStatusPanel();
 }
 
 /* ------------------------------------------------------------------ */
-/*  Animated Check & Custom Toast                                      */
+/*  动画对勾 & 自定义 Toast                                              */
 /* ------------------------------------------------------------------ */
 
 /**
- * Create an animated SVG circle-checkmark element.
- * @param {number} size CSS size in px (default 18)
- * @returns {string} HTML string
+ * 创建一个带动画的 SVG 圆圈对勾元素。
+ * @param {number} size CSS 尺寸，单位 px（默认 18）
+ * @returns {string} HTML 字符串
  */
 function createAnimatedCheck(size = 18) {
     return `<svg class="preset-sep-check" width="${size}" height="${size}" viewBox="0 0 52 52">
@@ -169,10 +165,11 @@ function createAnimatedCheck(size = 18) {
 }
 
 /**
- * Show a premium custom toast notification when API settings are protected.
+ * 显示自定义样式的保护成功 Toast 通知。
  */
 function showProtectionToast() {
     const source = oai_settings.chat_completion_source || '—';
+    // 查找当前非空的模型字段用于展示
     const modelFields = [
         'openai_model', 'claude_model', 'google_model',
         'openrouter_model', 'mistralai_model', 'custom_model',
@@ -203,11 +200,11 @@ function showProtectionToast() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  UI                                                                 */
+/*  界面                                                                */
 /* ------------------------------------------------------------------ */
 
 /**
- * Refresh the info panel that shows which API connection is currently locked.
+ * 刷新状态面板，展示当前被锁定保护的 API 连接信息。
  */
 function updateStatusPanel() {
     const $status = $('#preset_sep_status');
@@ -221,7 +218,7 @@ function updateStatusPanel() {
     $status.removeClass('hidden');
     $info.empty();
 
-    // Show a subset of connection fields with current values
+    // 展示精选的连接字段及其当前值
     for (const [settingName, label] of Object.entries(DISPLAY_FIELDS)) {
         const value = oai_settings[settingName];
         if (value === undefined || value === null || value === '') continue;
@@ -233,30 +230,25 @@ function updateStatusPanel() {
         $info.append($item);
     }
 
-    // If nothing to show
+    // 如果没有可展示的字段
     if ($info.children().length === 0) {
         $info.append('<div class="preset-sep-info-item"><span class="label">尚未检测到 API 连接信息</span></div>');
     }
 }
 
 /**
- * Toggle the enabled state and sync with ST's built-in bind_preset_to_connection.
+ * 切换启用/禁用状态。
  */
 function onEnabledToggle() {
     const isEnabled = !!$('#preset_sep_enabled').prop('checked');
     extension_settings[MODULE_NAME].enabled = isEnabled;
 
     if (isEnabled) {
-        // Set ST's built-in toggle to "unbound" so our approach works cleanly
-        // even if ST checks this flag in the future.  We handle the restore
-        // ourselves, so we want ST to still WRITE the connection fields from
-        // the preset (so they show up transiently) and then we overwrite them.
-        // Actually — the cleanest approach: keep bind_preset_to_connection = true
-        // so ST applies everything, and we simply restore afterwards.
-        // This means we DON'T need to touch bind_preset_to_connection at all.
-        console.log(`${LOG_PREFIX} Enabled — API settings will be protected during preset switches.`);
+        // 保持 bind_preset_to_connection = true，让 ST 正常写入所有设置，
+        // 我们在 AFTER 事件中恢复连接字段即可。
+        console.log(`${LOG_PREFIX} 已启用 —— 预设切换时将保护 API 连接设置。`);
     } else {
-        console.log(`${LOG_PREFIX} Disabled — preset switches will work normally.`);
+        console.log(`${LOG_PREFIX} 已禁用 —— 预设切换将恢复默认行为。`);
     }
 
     saveSettingsDebounced();
@@ -264,38 +256,38 @@ function onEnabledToggle() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Init                                                               */
+/*  初始化                                                              */
 /* ------------------------------------------------------------------ */
 
 (async function init() {
-    // Initialize extension settings
+    // 初始化扩展设置
     if (!extension_settings[MODULE_NAME]) {
         extension_settings[MODULE_NAME] = structuredClone(DEFAULT_SETTINGS);
     }
 
-    // Backfill any new default keys
+    // 回填新增的默认值
     for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
         if (extension_settings[MODULE_NAME][key] === undefined) {
             extension_settings[MODULE_NAME][key] = value;
         }
     }
 
-    // Load and inject settings HTML
+    // 加载并注入设置面板 HTML
     const settingsHtml = await renderExtensionTemplateAsync(MODULE_NAME, 'settings');
     $('#extensions_settings2').append(settingsHtml);
 
-    // Restore UI state from saved settings
+    // 从已保存的设置恢复 UI 状态
     $('#preset_sep_enabled').prop('checked', extension_settings[MODULE_NAME].enabled);
 
-    // Bind UI events
+    // 绑定 UI 事件
     $('#preset_sep_enabled').on('change', onEnabledToggle);
 
-    // Register event listeners for preset changes
+    // 注册预设切换事件监听器
     eventSource.on(event_types.OAI_PRESET_CHANGED_BEFORE, onPresetChangedBefore);
     eventSource.on(event_types.OAI_PRESET_CHANGED_AFTER, onPresetChangedAfter);
 
-    // Initial status panel render
+    // 初始渲染状态面板
     updateStatusPanel();
 
-    console.log(`${LOG_PREFIX} Extension loaded.`);
+    console.log(`${LOG_PREFIX} 扩展已加载。`);
 })();
