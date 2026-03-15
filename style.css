@@ -107,22 +107,37 @@
 /* 覆盖默认 toast 样式，实现极简高级暗色 + 左侧绿条 + 顶部细黄条 */
 #toast-container > .preset-sep-toast-wrapper {
     background: #1a1b1e !important;
+    background-image: none !important;
     border: none !important;
     border-radius: 8px !important;
     border-left: 4px solid #38d9a9 !important;
     border-top: 1px solid #fcc419 !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-    padding: 16px 20px 16px 50px !important; /* 左侧留出图标空间 */
+    padding: 14px 18px !important;
     opacity: 1 !important;
     color: #fff !important;
+    animation: psSlideIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 
-/* 恢复默认的成功图标背景，但调整位置 */
-#toast-container > .preset-sep-toast-wrapper.toast-success {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%2338d9a9"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>') !important;
-    background-size: 24px !important;
-    background-position: 15px center !important;
-    background-repeat: no-repeat !important;
+/* 覆盖 toastr 所有类型的默认背景图片 */
+#toast-container > .preset-sep-toast-wrapper.toast-success,
+#toast-container > .preset-sep-toast-wrapper.toast-info,
+#toast-container > .preset-sep-toast-wrapper.toast-warning,
+#toast-container > .preset-sep-toast-wrapper.toast-error {
+    background-image: none !important;
+    background-color: transparent !important;
+}
+
+/* 入场动画：从右侧滑入 + 淡入 */
+@keyframes psSlideIn {
+    0% {
+        transform: translateX(60px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .preset-sep-toast {

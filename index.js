@@ -182,6 +182,7 @@ function showProtectionToast() {
 
     const html = `
         <div class="preset-sep-toast">
+            ${createAnimatedCheck(28)}
             <div class="preset-sep-toast-body">
                 <div class="preset-sep-toast-title">API 连接已保护</div>
                 <div class="preset-sep-toast-detail">
