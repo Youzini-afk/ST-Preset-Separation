@@ -1,0 +1,32 @@
+<div id="preset_separation_settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>Preset Separation</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+
+            <div class="preset-sep-description">
+                <small>
+                    启用后，切换对话补全预设时将不会改变当前的 API 连接设置（API Source、模型、代理等），仅更新对话参数。
+                </small>
+            </div>
+
+            <label class="checkbox_label" for="preset_sep_enabled">
+                <input id="preset_sep_enabled" type="checkbox" />
+                <span>启用预设分离</span>
+            </label>
+
+            <div id="preset_sep_status" class="preset-sep-status hidden">
+                <div class="preset-sep-status-header">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>当前锁定的 API 连接</span>
+                </div>
+                <div id="preset_sep_info" class="preset-sep-info">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
