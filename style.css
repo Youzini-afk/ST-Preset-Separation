@@ -125,7 +125,7 @@
 #toast-container > .preset-sep-toast-wrapper.toast-warning,
 #toast-container > .preset-sep-toast-wrapper.toast-error {
     background-image: none !important;
-    background-color: transparent !important;
+    background-color: #1a1b1e !important;
 }
 
 /* 入场动画：从右侧滑入 + 淡入 */
