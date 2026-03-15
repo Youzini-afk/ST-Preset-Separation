@@ -82,7 +82,3 @@ ST-Preset-Separation/
 ├── style.css         # 样式文件
 └── README.md         # 说明文档
 ```
-
-## 📄 许可证
-
-MIT
